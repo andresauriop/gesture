@@ -3,6 +3,10 @@ import cv2
 import numpy as np
 
 from cvzone.HandTrackingModule import  HandDetector
+
+
+
+
 #Camera setup
 width, height = 1200,720
 
@@ -11,11 +15,10 @@ cap.set(3,width)
 cap.set(4,height)
 folderPath = "Presentacion"
 
-
 pathImages = sorted(os.listdir(folderPath),key=len)
 print(pathImages)
 
-imagesNumber = 3
+imagesNumber = 4
 hs,ws = int(120*1),int(213*1)
 gestureThreshold = 500
 buttonPressed = False
@@ -66,7 +69,7 @@ while True:
         #print(fingers)
 
         if cy<=gestureThreshold:
-            if fingers==[1,0,0,0,0]:
+            '''if fingers==[1,0,0,0,0]:
                 print("left")
                 if imagesNumber > 0:
                     imagesNumber -= 1
@@ -78,14 +81,32 @@ while True:
 
                     imagesNumber += 1
                     buttonPressed = True
+            '''
+
+            # delete
+            #if fingers == [1, 1, 1, 1, 1]:
+            #    cv2.circle(imgCurrent, indexFinger, 12, (0, 0, 255), cv2.FILLED)
+            #    annotations.clear()
+
 
             if fingers==[0,1,1,0,0]:
                 cv2.circle(imgCurrent,indexFinger,12,(0,0,255),cv2.FILLED)
+                annotations.append((9999, 9999))
+
+            ##if fingers == [0, 0, 0,0, 0]:
+
+            ##    cv2.circle(imgCurrent, indexFinger, 12, (0, 0, 255), cv2.FILLED)
+
+            ##    annotations.append((9999,9999))
+
+
 
             #draw
             if fingers==[0,1,0,0,0]:
                 cv2.circle(imgCurrent, indexFinger, 12, (0, 0, 255), cv2.FILLED)
                 annotations.append(indexFinger)
+
+
     if buttonPressed:
         buttonCounter += 1
         if buttonCounter > buttonDelay:
@@ -94,7 +115,10 @@ while True:
 
     for i in range(len(annotations)):
         if i!=0:
-            cv2.line(imgCurrent,annotations[i-1],annotations[i],(0,0,200),12)
+            print(annotations[i])
+            if annotations[i] != (9999,9999) and annotations[i-1] != (9999,9999):
+                cv2.line(imgCurrent,annotations[i-1],annotations[i],(0,0,200),12)
+
 
 
     # Adding webcam imagen on the slides
@@ -109,3 +133,6 @@ while True:
     key = cv2.waitKey(1)
     if key == ord('q'):
         break
+
+    if key == ord('c'):
+        annotations.clear()
